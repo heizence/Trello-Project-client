@@ -1,55 +1,28 @@
-import React from 'react';
-import { Button, Form, FormGroup, Label, Input, Container, Row, Col } from 'reactstrap';
+import React, { Component } from 'react'
 
-function Login(props) {
-  return (
-    <Container fluid>
-      <Row>
-        <Col>
-          <h1 style={{ marginBottom: "30px", marginTop: "120px", fontWeight: "bold", marginRight: "20px" }}>Trello</h1>
-          <Form>
-            <FormGroup>
-              <Label for="exampleEmail"> </Label>
-              <br />
-              <Input
-                className="form-control"
-                type="email"
-                name="email"
-                id="exampleEmail"
-                placeholder="이메일을 입력하세요"
-                style ={{marginBottom: "10px", marginRight: "30px"}}
-              />
-              <Label for="examplePassword"></Label>
-              <br />
-              <Input
-                className="form-control-pw"
-                type="password"
-                name="password"
-                id="examplePassword"
-                placeholder="비밀번호를 입력하세요"
-                style ={{marginRight: "30px"}}
-              />
-            </FormGroup>
-            <Button
-              className="mainButtons"
-              color="success"
-              style ={{backgroundColor: "#9B5AF5", border : "none"}}
-            >
-              Sign In
-            </Button>
+class SignUp extends Component {
+    
+    render() {
+        return (
+            <div className='SignUpContainer'>
+                <h1 style={{fontWeight: 'bold'}}>Trello</h1>
 
-            <Button
-              className="mainButtons"
-              color="success"
-              style ={{backgroundColor: "#9B5AF5", border : "none"}}
-            >
-              Sign Up
-            </Button>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
-  );
+                <div className='InputContainer'>
+                    <div className="SignUpDiv">
+                        <span className='SignUpText'>이메일</span>
+                        <input className="SignUpInput" />
+                    </div>
+                    <div className="SignUpDiv">
+                        <span className='SignUpText'>비밀번호</span>
+                        <input className="SignUpInput" />
+                    </div>
+                </div>
+
+                <button className="SignUpButton">로그인</button>
+                <button className="SignUpButton">회원가입</button>
+            </div>
+        )
+    }
 }
 
-export default Login;
+export default SignUp;

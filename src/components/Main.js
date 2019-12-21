@@ -11,8 +11,7 @@ function Main(props) {
                 {boardList.map((board, index) => (
                     <div className='EachBoard' index={index}>{board}</div>
                 ))}
-                <div className='EachBoard' 
-                style={{backgroundColor: '#c3c9c5', color: 'black'}}>Create new board</div>
+                <div id='CreateBoard'>Create new board</div>
             </div>
         </div>
     )

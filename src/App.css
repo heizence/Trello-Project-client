@@ -1,38 +1,171 @@
+* {
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* 메인 로그인 화면 */
+
+#exampleEmail, #examplePassword {
+  margin-left: 20px;
+  width: 400px;
+  display: inline-block;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.mainButtons {
+  margin-left: 5px;
+  margin-right: 10px;
+  width: 170px;
+  background-color: #09d3ac;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+/* 네비게이션 바 */
+
+.NavBar {
+  text-align: right;
+  background-color: blue;
+  padding: 5px;
+}
+
+#NavText1 {
+  font-size: 20px;
+  color: white;
+  margin-right: 30px;
+}
+
+#NavText2 {
+  display: inline-block;
+  width: auto;
+}
+
+.text {
+  margin-right: 30px;
+  font-size: 20px;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+#NavText1, .text:hover {
+  cursor: pointer;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* 회원가입 페이지 */
+.SignUpContainer {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.InputContainer {
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 300px;
+}
+
+.SignUpDiv {
+  text-align: left;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.SignUpText {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.SignUpInput {
+  width: 300px;
+  border-radius: 5px;
+}
+
+.SignUpButton {
+  margin-left: 20px;
+  border-radius: 5px;
+}
+
+/* 메인 보드 페이지 */
+.PersonalBoards {
+  margin-top: 30px;
+  text-align: left;  
+}
+
+/* 보드 스타일 */
+.EachBoard, #CreateBoard {
+  background-color: #5dc425;
+  width: 200px;
+  height: 100px;
+  border-radius: 5px;
+  display: inline-block;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+.EachBoard:hover {
+  background-color: #559c2f;
+  cursor: pointer;
+}
+
+#CreateBoard {
+  background-color: #ebebeb;
+  color: black;
+}
+
+#CreateBoard:hover {
+  background-color: #d9d9d9;
+  cursor: pointer;
+}
+
+/* 각 보드 내 카드  */
+.EachList {
+  background-color: #c3c9c5;
+  width: 200px;
+  height: auto;
+  border-radius: 5px;
+  float: left;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  padding: 10px;
+  text-align: left;
+}
+
+.ListTitles {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.ListTitles:hover {
+  cursor: pointer;
+}
+
+.CardContents {
+  background-color: white;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  padding: 7px;
+  overflow: hidden;
+}
+
+.CardContents:hover {
+  background-color: #e6e6e6;
+  cursor: pointer;
+}
+
+.AddCard:hover {
+  background-color: #e6e6e6;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* 내용 클릭시 모달 */
+.ModalTitle {
+  background: transparent;
+  box-shadow: none;
+  font-weight: bold;
+  border: none;
+  width: 400px;
 }
