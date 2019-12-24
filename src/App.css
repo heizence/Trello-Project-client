@@ -119,10 +119,33 @@
   cursor: pointer;
 }
 
+.changeBoardTitle {
+  font-size: 30px;
+  font-weight: bold;
+  margin-left: 20px;
+  display: 'inline'
+}
+
+.changeBoardTitle:hover {
+  cursor: pointer;
+}
+
 /* 각 보드 내 카드  */
+.AddNewList {
+  margin-left: 20px;
+  margin-bottom: 20px;
+  color: rgb(136, 139, 137);
+  font-weight: bold;
+}
+
+.AddNewList:hover {
+  cursor: pointer;
+  color: #303030;
+}
+
 .EachList {
   background-color: #c3c9c5;
-  width: 200px;
+  width: 250px;
   height: auto;
   border-radius: 5px;
   float: left;
@@ -132,13 +155,23 @@
   text-align: left;
 }
 
-.ListTitles {
+.ListTitlesContainer {
   margin-bottom: 10px;
   font-size: 18px;
   font-weight: bold;
 }
 
-.ListTitles:hover {
+.trashCan {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin-left: 40px;
+  background-image: url('https://image.flaticon.com/icons/png/512/1214/1214428.png');
+  background-size: cover;
+}
+
+.trashCan:hover {
+  background-image: url("https://image.flaticon.com/icons/png/512/1214/1214594.png");
   cursor: pointer;
 }
 
@@ -162,10 +195,66 @@
 }
 
 /* 내용 클릭시 모달 */
-.ModalTitle {
+.ListTitle, .ListInput, .ModalTitle, .ModalInput, .ModalContents {
   background: transparent;
   box-shadow: none;
   font-weight: bold;
   border: none;
   width: 400px;
 }
+
+.ListTitle, .ListInput {
+  width: 160px;
+  display: inline-block;
+}
+
+.ListInput, .ModalInput {
+  overflow: hidden;
+}
+
+.ModalContents {
+  font-weight: normal;
+  overflow: hidden;
+  height: 100px;
+}
+
+.ListTitle, .ModalTitle:hover {
+  cursor: pointer;
+}
+
+.ModalDelete {
+  color: rgb(136, 139, 137);
+}
+
+.ModalDelete:hover {
+  color: hsl(0, 75%, 51%);
+  cursor: pointer;
+}
+
+/* 내용 클릭시 모달 (백업)*/
+/* .ModalTitle, .ModalContents {
+  background: transparent;
+  box-shadow: none;
+  font-weight: bold;
+  border: none;
+  width: 400px;
+}
+
+.ModalContents {
+  font-weight: normal;
+  overflow: hidden;
+  height: 100px;
+}
+
+.ModalTitle, .ModalContents:hover {
+  cursor: pointer;
+}
+
+.ModalDelete {
+  color: rgb(136, 139, 137);
+}
+
+.ModalDelete:hover {
+  color: hsl(0, 75%, 51%);
+  cursor: pointer;
+} */
