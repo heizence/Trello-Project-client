@@ -30,10 +30,6 @@ class SignUp extends Component {
 
                 <div className='InputContainer'>
                     <div className="SignUpDiv">
-                        <span className='SignUpText'>Email</span>
-                        <input className="SignUpInput" onChange={this.onChange} name='email' type='email'/>
-                    </div>
-                    <div className="SignUpDiv">
                         <span className='SignUpText'>Username</span>
                         <input className="SignUpInput" onChange={this.onChange}
                         name='username' style={{width:'200px'}}/>
@@ -49,8 +45,8 @@ class SignUp extends Component {
                     </div>
                 </div>
 
-                <button className="SignUpButton">가입</button>
-                <button className="SignUpButton">로그인 화면으로 이동</button>
+                <button className="SignUpButton">수정</button>
+                <button className="SignUpButton">메인 화면으로 이동</button>
             </div>
         )
     }
