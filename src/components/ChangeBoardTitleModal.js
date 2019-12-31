@@ -1,20 +1,21 @@
 import React, { Component, useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import InputComponent from './InputComponent';
-import { connect } from 'react-redux';
-import { AddNewBoard } from '../reduxFiles/Actions';
-import { render } from '@testing-library/react';
+import InputComponent from './InputComponent'
+// import { ChangeBoardTitle } from '../reduxFiles/Actions';
+// import { connect } from 'react-redux';
+//import { render } from '@testing-library/react';
 
 // class ModalExample extends Component {
 //   constructor(props) {
 //     super(props)
 //     this.state = {
 //       modal: false,
-//       boardTitle: ''
+//       oldTitle: this.props.buttonLabel,
+//       newTitle: ''
 //     }
 
 //     this.toggle = this.toggle.bind(this)
-//     this.AddBoard = this.AddBoard.bind(this)
+//     this.ChangeBoard = this.ChangeBoard.bind(this)
 //     this.setBoardTitle = this.setBoardTitle.bind(this)
 //   }
 
@@ -26,83 +27,83 @@ import { render } from '@testing-library/react';
 
 //   setBoardTitle(e) {
 //     this.setState({
-//       boardTitle: e.target.value
+//       newTitle: e.target.value
 //     })
 //   }
 
-//   AddBoard() {
-//     this.props.AddBoard(this.state.boardTitle)
+//   ChangeBoard() {
+//     this.props.ChangeBoard(this.state.oldTitle, this.state.newTitle)
+//     console.log(this.props.board)
 //   }
 
 //   render() {
 //     const { buttonLabel, className, css } = this.props;
 //     return (
-//       <div style={{display: 'inline-block'}}>
-//         <div id={css} onClick={this.toggle}>{buttonLabel}</div>
+//       <div>
+//       <span className={css} onClick={this.toggle}>{buttonLabel}</span>
 //         <Modal isOpen={this.state.modal} fade={false} toggle={this.toggle} className={className}>
 //           <ModalHeader toggle={this.toggle}>
-//               <div className="ModalTitle" >새로운 보드 추가</div>
+//               <div className="ModalTitle" >보드 이름 변경</div>
 //           </ModalHeader>
 //           <ModalBody>          
-//             <InputComponent class="ModalTitle" type="title" buttonLabel="보드 이름을 입력하세요"
-//             setInfo={this.setBoardTitle} />          
+//             <InputComponent class="ModalTitle" type="title" buttonLabel={buttonLabel}
+//             setInfo={this.setBoardTitle} />
 //           </ModalBody>
 //           <ModalFooter>          
 //             <Button color="primary" onClick={() => {
 //               this.toggle()
-//               this.AddBoard()
-//             }}>추가</Button>
+//               this.ChangeBoard()
+//             }}>변경</Button>
 //             <Button color="secondary" onClick={this.toggle}>취소</Button>
 //           </ModalFooter>
 //         </Modal>
 //       </div>
 //     );
 //   }
-  
 // }
 
 // const mapStateToProps = state => ({
-//   board : state.Add
+//   board : state.Change
 // })
 
 // const mapDispatchToProps = dispatch => ({
-//   AddBoard : boardTitle => dispatch(AddNewBoard(boardTitle))
+//   ChangeBoard : (oldTitle, newTitle) => dispatch(ChangeBoardTitle(oldTitle, newTitle))
 // })
 
-// export default connect(
-//   mapStateToProps, mapDispatchToProps
-// )(ModalExample);
+// export default connect(mapStateToProps, mapDispatchToProps)(ModalExample);
 
 const ModalExample = (props) => {
+  
   const [modal, setModal] = useState(false)
 
   const toggle = () => {
     setModal(!modal)
   }
 
-  const { buttonLabel, className, css, AddBoard, setInfo } = props;
+  const { buttonLabel, className, css } = props;
 
   return (
-    <div style={{display: 'inline-block'}}>
-      <div id={css} onClick={toggle}>{buttonLabel}</div>
+    <div>
+    <span className={css} onClick={toggle}>{buttonLabel}</span>
       <Modal isOpen={modal} fade={false} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>
-            <div className="ModalTitle" >새로운 보드 추가</div>
+            <div className="ModalTitle" >보드 이름 변경</div>
         </ModalHeader>
         <ModalBody>          
-          <InputComponent class="ModalTitle" type="title" buttonLabel="보드 이름을 입력하세요"
-          setInfo={setInfo} />          
+          <InputComponent class="ModalTitle" type="title" buttonLabel={buttonLabel}
+          setInfo={props.setInfo}/>
         </ModalBody>
         <ModalFooter>          
           <Button color="primary" onClick={() => {
+            props.ChangeBoardTitle(buttonLabel)
             toggle()
-            AddBoard()
-          }}>추가</Button>
+          }}>변경</Button>
           <Button color="secondary" onClick={toggle}>취소</Button>
         </ModalFooter>
       </Modal>
     </div>
-  );  
+  );
+  
 }
 
 export default ModalExample;

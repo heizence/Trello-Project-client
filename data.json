@@ -1,0 +1,52 @@
+{
+    "boardDatas" : [
+        {
+            "id":1,
+            "boardTitle": "a1",
+            "boardContents" : [
+                {
+                    "title": "Things To Do",
+                    "lists": [
+                        {"contentTitle": "부족한 부분 파악하기", "contentText": ""}, 
+                        {"contentTitle": "복습", "contentText": ""}
+                    ]
+                },
+                {
+                    "title": "Doing",
+                    "lists": [
+                        {"contentTitle": "블로깅하기", "contentText": "블로깅 열심히 하자!"}, 
+                        {"contentTitle": "TIL 적기", "contentText": "빼먹지 말자"}
+                    ]
+                },
+                {
+                    "title": "Done",
+                    "lists": []
+                }
+            ]
+        },
+        {
+            "id":2,
+            "boardTitle": "a2",
+            "boardContents" : [
+                {
+                    "title": "Things To Do(a2)",
+                    "lists": [
+                        {"contentTitle": "부족한 부분 파악하기(a2)", "contentText": "(a2)"}, 
+                        {"contentTitle": "복습(a2)", "contentText": ""}
+                    ]
+                },
+                {
+                    "title": "Doing(a2)",
+                    "lists": [
+                        {"contentTitle": "블로깅하기(a2)", "contentText": "블로깅 열심히 하자!(a2)"}, 
+                        {"contentTitle": "TIL 적기(a2)", "contentText": "빼먹지 말자(a2)"}
+                    ]
+                },
+                {
+                    "title": "Done(a2)",
+                    "lists": []
+                }
+            ]
+        }
+    ]
+}

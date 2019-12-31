@@ -6,7 +6,10 @@ const ModalExample = (props) => {
   const {
     buttonLabel,
     className,
-    css
+    css,
+    boardTitle,
+    setInfo,
+    AddList
   } = props;
 
   const [modal, setModal] = useState(false);
@@ -21,10 +24,14 @@ const ModalExample = (props) => {
             <div className="ModalTitle" >새로운 리스트 추가</div>
         </ModalHeader>
         <ModalBody>          
-          <InputComponent class="ModalTitle" type="title" buttonLabel="리스트의 타이틀을 입력하세요" />
+          <InputComponent class="ModalTitle" type="title" buttonLabel="리스트의 타이틀을 입력하세요"
+          setInfo={setInfo}/>
         </ModalBody>
         <ModalFooter>          
-          <Button color="primary" onClick={toggle}>추가</Button>
+          <Button color="primary" onClick={() => {
+            AddList(boardTitle)
+            toggle()
+          }}>추가</Button>
           <Button color="secondary" onClick={toggle}>취소</Button>
         </ModalFooter>
       </Modal>

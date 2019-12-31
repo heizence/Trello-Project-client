@@ -33,17 +33,20 @@
   font-size: 20px;
   color: white;
   margin-right: 30px;
+  text-decoration: none;
 }
 
 #NavText2 {
   display: inline-block;
   width: auto;
+  text-decoration: none;
 }
 
 .text {
   margin-right: 30px;
   font-size: 20px;
   color: white;
+  text-decoration: none;
 }
 
 #NavText1, .text:hover {

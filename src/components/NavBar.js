@@ -1,13 +1,20 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 function NavBar(props) {
     return (
         <div className='NavBar'>
-            <span id='NavText1'>Main</span>
+            <Link to='/main'>
+                <span id='NavText1'>Main</span>
+            </Link>
 
             <div id='NavText2'>
-                <span className='text'>MyPage</span>
-                <span className='text'>Logout</span>    
+                <Link to='/mypage'>
+                    <span className='text'>MyPage</span>
+                </Link>
+                <Link to='/'>
+                    <span className='text'>Logout</span>
+                </Link>
             </div>
         </div>
     )
