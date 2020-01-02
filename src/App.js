@@ -6,47 +6,6 @@ import Main from './components/Main';
 import EachBoard from './components/EachBoard';
 import SignUp from './components/SignUp';
 import MyPage from './components/MyPage';
-// import { store } from './reduxFiles/rootReducerAndStore'
-// import { connect } from 'react-redux';
-
-// class App extends Component {
-//   constructor(props) {
-//     super(props)
-//     this.getBoardNames = this.getBoardNames.bind(this)
-//   }
-
-//   getBoardNames() {
-//     console.log('app에서 store 상태 조회 : ', store.getState())
-//     let boardList = this.props.board
-//     let boardNames = []
-
-//     boardList.forEach(board => {
-//       boardNames.push(board.boardTitle)      
-//     });
-
-//     console.log('app에서 보드리스트 조회 : ', boardList)
-
-//     return boardNames
-//   }
-
-//   render() {
-//     return (
-//       <div className="App">
-//         <Route path="/" exact component={Login} />
-//         <Route path="/signup" exact component={SignUp} />
-//         <Route path="/mypage" exact component={MyPage} />
-//         <Route path="/main" exact render={() => <Main board={this.getBoardNames()} />} />
-//         <Route path="/main/:boardName" component={EachBoard} />
-//       </div>
-//     );
-//   }  
-// }
-
-// const mapStateToProps = state => ({
-//   board : state.Add
-// })
-
-// export default connect(mapStateToProps)(App);
 
 class App extends Component {
   constructor(props) {
@@ -54,6 +13,7 @@ class App extends Component {
     this.state = {
       boardData: [
         {
+            id: 0,
             boardTitle: 'a1',
             boardContents : [
                 {
@@ -77,6 +37,7 @@ class App extends Component {
             ]
         },
         {
+            id: 1,
             boardTitle: 'a2',
             boardContents : [
                 {
@@ -100,11 +61,13 @@ class App extends Component {
             ]
         },
       ],
-      setInfo: ''
+      setInfo: '',
+      setInfo2: '',
     }
 
     this.GetBoardTitles = this.GetBoardTitles.bind(this)
     this.setInfo = this.setInfo.bind(this)
+    this.setInfo2 = this.setInfo2.bind(this)
     this.AddBoard = this.AddBoard.bind(this)
     this.ChangeBoardTitle = this.ChangeBoardTitle.bind(this)
     this.DeleteBoard = this.DeleteBoard.bind(this)
@@ -112,8 +75,12 @@ class App extends Component {
     this.ChangeListTitle = this.ChangeListTitle.bind(this)
     this.DeleteList = this.DeleteList.bind(this)
     this.AddCard = this.AddCard.bind(this)
-    this.ChangeCardDescription = this.ChangeCardDescription.bind(this)
+    this.ChangeCardTitle = this.ChangeCardTitle.bind(this)
     this.DeleteCard = this.DeleteCard.bind(this)
+    this.AddCard = this.AddCard.bind(this)
+    this.ChangeCardTitle = this.ChangeCardTitle.bind(this)
+    this.DeleteCard = this.DeleteCard.bind(this)
+    this.AddOrChangeCardDescription = this.AddOrChangeCardDescription.bind(this)
   }
 
   // 보드 이름 가져오기
@@ -129,11 +96,36 @@ class App extends Component {
   }
 
   // 추가, 변경 시 사용할 정보를 임시로 저장
-  setInfo(e) {
-    this.setState({
-      setInfo: e.target.value
-    })
-    //console.log('SET INFO : ', this.state.setInfo)
+  setInfo(e, text) {
+    if (e) {
+      this.setState({
+        setInfo: e.target.value
+      })
+      return;
+    }
+    else if (text) {
+      this.setState({
+        setInfo: text
+      })
+      return;
+    }
+
+    console.log('SET INFO : ', this.state.setInfo)
+  }
+
+  setInfo2(e, text) {
+    if (e) {
+      this.setState({
+        setInfo2: e.target.value
+      })
+      return;
+    }
+    else if (text) {
+      this.setState({
+        setInfo2: text
+      })
+    }
+    console.log('SET INFO2 : ', this.state.setInfo2)
   }
 
   // 보드 추가
@@ -152,6 +144,10 @@ class App extends Component {
 
   // 보드 제목 변경
   ChangeBoardTitle(oldTitle) {
+    if (this.state.setInfo === '') {
+      return;
+    }
+
     let stateToChange = this.state.boardData
 
     for (let i=0; i<stateToChange.length; i++) {
@@ -162,7 +158,8 @@ class App extends Component {
     }
     
     this.setState({
-      boardData: stateToChange
+      boardData: stateToChange,
+      setInfo: ''
     })
 
     console.log('보드 제목 변경됨... ', this.state.boardData)
@@ -230,15 +227,16 @@ class App extends Component {
           board.boardContents.map(list => {
             if (list.title === oldListTitle) {
               list.title = this.state.setInfo
+              console.log('리스트 수정됨... ', list)
             }
             return list
           })
         }
         return board
-      })
+      }),
+      setInfo: ''
     }))
 
-    console.log('리스트 수정됨... ', this.state.boardData[key])
   }
 
   // 리스트 삭제
@@ -256,10 +254,10 @@ class App extends Component {
       boardData: prevState.boardData.map((board, index) => {
         if (index === key) {
           for (let i=0; i<board.boardContents.length; i++) {
-            let list = board.boardContents
 
-            if (list[i].title === listTitle) {
-              list.splice(i, 1)
+            if (board.boardContents[i].title === listTitle) {
+              board.boardContents.splice(i, 1)
+              console.log('리스트 삭제됨... ', board.boardContents)
               break
             }
           }
@@ -268,20 +266,164 @@ class App extends Component {
       })
     }))
 
-    console.log('리스트 삭제됨... ', this.state.boardData[key])
   }
 
   // 카드 추가
-  AddCard() {}
+  AddCard(boardTitle, listTitle) {
+    let key
 
-  // 카드 내용 변경
-  ChangeCardDescription() {}
+    this.state.boardData.forEach((board, index) => {
+      if (board.boardTitle === boardTitle) {
+        key = index
+        return
+      }
+    })
+    
+    let newCard = {
+      contentTitle: this.state.setInfo, 
+      contentText: ''
+    }
+
+    this.setState(prevState => ({
+      boardData: prevState.boardData.map((board, index) => {
+        if (index === key) {
+          board.boardContents.map((list) => {
+            if (list.title === listTitle) {
+              list.lists.push(newCard)
+            }
+            return list
+          })
+        }
+        return board
+      }),
+      setInfo: ''
+    }))
+
+    console.log('새로운 카드 추가됨... ', this.state.boardData[key])
+  }
+  
+  // 카드 제목 변경
+  ChangeCardTitle(boardTitle, listTitle, oldCardTitle) {
+    this.setState({
+      setInfo: ''
+    })
+
+    if (this.state.setInfo === '') {
+      return;
+    }
+
+    let key
+
+    this.state.boardData.forEach((board, index) => {
+      if (board.boardTitle === boardTitle) {
+        key = index
+        return
+      }
+    })
+
+    this.setState(prevState => ({
+      boardData: prevState.boardData.map((board, index) => {
+        if (index === key) {
+          board.boardContents.map((list) => {
+            if (list.title === listTitle) {
+              list.lists.map(card => {
+                if (card.contentTitle === oldCardTitle) {
+                  card.contentTitle = this.state.setInfo
+                }
+                return card
+              })
+            }
+            return list
+          })
+        }
+        return board
+      }),
+      setInfo: ''
+    }))
+
+    console.log('카드 수정됨... ', this.state.boardData[key])
+  }
 
   // 카드 삭제
-  DeleteCard() {}
+  DeleteCard(boardTitle, listTitle, cardTitle) {
+    let key
 
+    this.state.boardData.forEach((board, index) => {
+      if (board.boardTitle === boardTitle) {
+        key = index
+        return
+      }
+    })
 
+    this.setState(prevState => ({
+      boardData: prevState.boardData.map((board, index) => {
+        if (index === key) {
+          for (let i=0; i<board.boardContents.length; i++) {
+            let list = board.boardContents
+
+            if (list[i].title === listTitle) {
+              for (let j=0; j<list[i].lists.length; j++) {
+                if (list[i].lists[j].contentTitle === cardTitle) {
+                  list[i].lists.splice(j, 1)
+                  break;
+                }
+              }
+              break
+            }
+          }
+        }
+        return board
+      })
+    }))
+
+    console.log('카드 삭제됨... ', this.state.boardData[key])
+
+  }
+
+  // 카드 내용 변경
+  AddOrChangeCardDescription(boardTitle, listTitle, cardTitle) {
+    if (this.state.setInfo2 === '') {
+      return;
+    }
+
+    let key
+
+    this.state.boardData.forEach((board, index) => {
+      if (board.boardTitle === boardTitle) {
+        key = index
+        return
+      }
+    })
+
+    this.setState(prevState => ({
+      boardData: prevState.boardData.map((board, index) => {
+        if (index === key) {
+          for (let i=0; i<board.boardContents.length; i++) {
+            let list = board.boardContents
+
+            if (list[i].title === listTitle) {
+              for (let j=0; j<list[i].lists.length; j++) {
+                if (list[i].lists[j].contentTitle === cardTitle) {
+                  list[i].lists[j].contentText = this.state.setInfo2
+
+                  console.log('카드 내용 추가/수정됨 : ', list[i])
+                  break;
+                }
+              }
+              break
+            }
+          }
+        }
+        return board
+      }),
+      setInfo2: ''
+    }))
+    
+  }
+
+  
   render() {
+    console.log('상태1 : ', this.state.setInfo, '\n', '상태2 : ', this.state.setInfo2)
     return (
       <div className="App">
         <Route path="/" exact component={Login} />
@@ -299,11 +441,16 @@ class App extends Component {
           <EachBoard           
           board={this.state.boardData[match.params.boardIndex]}
           setInfo={this.setInfo}
+          setInfo2={this.setInfo2}
           ChangeBoardTitle={this.ChangeBoardTitle}
           DeleteBoard={this.DeleteBoard}
           AddList={this.AddList}
           ChangeListTitle={this.ChangeListTitle}
           DeleteList={this.DeleteList}
+          AddCard={this.AddCard}
+          ChangeCardTitle={this.ChangeCardTitle}
+          DeleteCard={this.DeleteCard}
+          AddOrChangeCardDescription={this.AddOrChangeCardDescription}
           />
         }
         />

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-function NavBar(props) {
+const NavBar = (props) => {
     return (
         <div className='NavBar'>
             <Link to='/main'>

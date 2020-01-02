@@ -26,7 +26,7 @@ class SignUp extends Component {
     render() {
         return (
             <div className='SignUpContainer'>
-                <h3>회원가입</h3>
+                <h3>MyPage</h3>
 
                 <div className='InputContainer'>
                     <div className="SignUpDiv">

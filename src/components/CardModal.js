@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import InputComponent from './InputComponent'
 
-const ModalExample = (props) => {
+const ModalExample = (props) => {  
   const {
-    buttonLabel,
-    className,
-    type,
-    css
+    buttonLabel, className, type, css,
+    boardTitle, listTitle, contentText,
+    setInfo, setInfo2,
+    AddCard, ChangeCardTitle, DeleteCard,
+    AddOrChangeCardDescription
   } = props;
 
   const [modal, setModal] = useState(false);
+
 
   const toggle = () => setModal(!modal);
 
@@ -20,23 +22,36 @@ const ModalExample = (props) => {
       <Modal isOpen={modal} fade={false} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>
             <InputComponent class="ModalTitle" type='title'
-            buttonLabel={buttonLabel === '+ Add another card' ? '제목을 입력하세요' : buttonLabel} />
+            buttonLabel={buttonLabel === '+ Add another card' ? '제목을 입력하세요' : buttonLabel}
+            setInfo={setInfo} />
         </ModalHeader>
         <ModalBody>
           <div style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '10px'}}>Description</div>
-          <InputComponent class="ModalContents" buttonLabel={props.contentText || '내용을 입력하세요'} type='textarea'/>
+          <InputComponent class="ModalContents" buttonLabel={contentText || '내용을 입력하세요'} type='textarea'
+          setInfo={setInfo} setInfo2={setInfo2}
+          boardTitle={boardTitle} listTitle={listTitle} cardTitle={buttonLabel}
+          AddOrChangeCardDescription={AddOrChangeCardDescription}/>
           {type === 'modify' ? <div className='ModalDelete' 
           onClick={() => {
             let answer = window.confirm('카드를 삭제하시겠습니까?')
                 if (answer) {
-                    //삭제 코드
+                    DeleteCard(boardTitle, listTitle, buttonLabel)
                     alert('삭제되었습니다')
+                    toggle()
                 }
           }}>Delete this Card</div> : ''}
         </ModalBody>
         <ModalFooter>
-          {type === 'modify' ? <Button color="primary" onClick={toggle}>수정</Button> :
-          <Button color="primary" onClick={toggle}>추가</Button>}
+          {type === 'modify' ? <Button color="primary" onClick={() => {
+            ChangeCardTitle(boardTitle, listTitle, buttonLabel) 
+            AddOrChangeCardDescription(boardTitle, listTitle, buttonLabel)
+            toggle()
+          }}>수정</Button> :
+          <Button color="primary" onClick={() => {
+            AddCard(boardTitle, listTitle)
+            AddOrChangeCardDescription(boardTitle, listTitle, buttonLabel)
+            toggle()
+          }}>추가</Button>}
 
           <Button color="secondary" onClick={toggle}>취소</Button>
         </ModalFooter>
@@ -46,45 +61,3 @@ const ModalExample = (props) => {
 }
 
 export default ModalExample;
-
-// 백업
-
-// const ModalExample = (props) => {
-//   const {
-//     buttonLabel,
-//     className,
-//     type,
-//     css
-//   } = props;
-
-//   const [modal, setModal] = useState(false);
-
-//   const toggle = () => setModal(!modal);
-
-//   return (
-//     <div>
-//       <div className={css} onClick={toggle}>{buttonLabel}</div>
-//       <Modal isOpen={modal} fade={false} toggle={toggle} className={className}>
-//         <ModalHeader toggle={toggle}>
-//             <input className="ModalTitle" 
-//             defaultValue={buttonLabel === '+ Add another card' ? '제목을 입력하세요' : buttonLabel}
-//             onClick={(e) => (e.target.select())} />
-//         </ModalHeader>
-//         <ModalBody>
-//           <div style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '10px'}}>Description</div>
-//           <textarea className='ModalContents' defaultValue={props.contentText || '내용을 입력하세요'}
-//           onClick={(e) => (e.target.select())} />
-//           {type === 'modify' ? <div className='ModalDelete' onClick={() => alert('delete')}>Delete this Card</div> : ''}
-//         </ModalBody>
-//         <ModalFooter>
-//           {type === 'modify' ? <Button color="primary" onClick={toggle}>수정</Button> :
-//           <Button color="primary" onClick={toggle}>추가</Button>}
-
-//           <Button color="secondary" onClick={toggle}>취소</Button>
-//         </ModalFooter>
-//       </Modal>
-//     </div>
-//   );
-// }
-
-// export default ModalExample;

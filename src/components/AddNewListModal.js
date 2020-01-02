@@ -4,12 +4,8 @@ import InputComponent from './InputComponent'
 
 const ModalExample = (props) => {
   const {
-    buttonLabel,
-    className,
-    css,
-    boardTitle,
-    setInfo,
-    AddList
+    buttonLabel, className, css,
+    boardTitle, setInfo, AddList
   } = props;
 
   const [modal, setModal] = useState(false);
