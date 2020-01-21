@@ -1,9 +1,3 @@
-/* fakeserver 실행
+// 서버 주소 설정
 
-$ yarn global add json-server
-$ json-server ./data.json --port 4000
-
-*/
-
-module.exports = 'http://localhost:4000'
-
+module.exports = 'http://localhost:3001'

@@ -12,9 +12,9 @@ const NavBar = (props) => {
                 <Link to='/mypage'>
                     <span className='text'>MyPage</span>
                 </Link>
-                <Link to='/'>
-                    <span className='text'>Logout</span>
-                </Link>
+                
+                <span className='text' onClick={props.logOut}>Logout</span>
+               
             </div>
         </div>
     )

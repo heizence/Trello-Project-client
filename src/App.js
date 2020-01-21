@@ -1,16 +1,30 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import Login from './components/Login'
 import Main from './components/Main';
 import EachBoard from './components/EachBoard';
 import SignUp from './components/SignUp';
 import MyPage from './components/MyPage';
+import axios from 'axios'
+import serverAddress from './serverAddress'
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      user: {
+        email: '',
+        password: '',
+        userName: '',
+        createdAt: ''
+      },
+      enteredIdtext: '',
+      enteredPwtext: '',
+      enteredUsername: '',
+      loggedInfo: '',
+      logStatus: false,
+
       boardData: [
         {
             id: 0,
@@ -65,6 +79,13 @@ class App extends Component {
       setInfo2: '',
     }
 
+    this.enteredId = this.enteredId.bind(this)
+    this.enteredPw = this.enteredPw.bind(this)
+    this.enteredUsername = this.enteredUsername.bind(this)
+    this.fetchlogin = this.fetchlogin.bind(this)
+    this.fetchLogOut = this.fetchLogOut.bind(this)
+    this.fetchBoardData = this.fetchBoardData(this)
+    this.redirectPage = this.redirectPage.bind(this)
     this.GetBoardTitles = this.GetBoardTitles.bind(this)
     this.setInfo = this.setInfo.bind(this)
     this.setInfo2 = this.setInfo2.bind(this)
@@ -83,7 +104,88 @@ class App extends Component {
     this.AddOrChangeCardDescription = this.AddOrChangeCardDescription.bind(this)
   }
 
-  // 보드 이름 가져오기
+  // 아이디, 비밀번호 입력
+  enteredId(e) {
+    this.setState({
+      enteredIdtext: e.target.value
+    });
+  }
+
+  enteredPw(e) {
+    this.setState({
+      enteredPwtext: e.target.value
+    });
+  }
+
+  enteredUsername(e) {
+    this.setState({
+      enteredUsername: e.target.value
+    });
+  }
+
+  // 로그인
+  fetchlogin() {
+     axios
+      .post(`${serverAddress}/users/signin`, {
+        email: this.state.enteredIdtext,
+        password: this.state.enteredPwtext
+      })
+      .then(res => {
+        console.log("로그인 응답 : ", res);
+        if (res.status === 200) {
+          let { email, password, username } = res.data
+          this.setState({
+            ...this.state,
+            user: {
+              email, password, username
+            },
+            logStatus: true
+          })
+          alert('로그인 되었습니다.')
+        }
+        else {
+          alert('아이디 혹은 비밀번호가 틀립니다.')
+        }
+      })
+     
+  }
+
+  // 로그아웃
+  fetchLogOut() {
+    let logOut = window.confirm('로그아웃 하시겠습니까?')
+
+    if (logOut) {
+      axios.post(`${serverAddress}/users/signout`)
+      .then(res => {
+        console.log('로그아웃 응답 : ', res)
+        alert(res.data)
+      })
+      this.setState({logStatus: false})
+    }
+  }
+
+  // 보드 정보 불러오기
+  fetchBoardData() {
+    axios.get("/boardData", { withCredentials: true })
+    .then(res =>
+      this.setState({
+        boardData: res
+      })
+    );
+  }
+
+  // redirect
+  redirectPage(address) {
+    console.log(`/${address}`)
+    if (address === '') {
+      return <Redirect to='/' />
+    }
+    else {
+      return <Redirect to={`/${address}`} />;
+    }
+  }
+
+  // 보드 이름 추출하기
   GetBoardTitles() {    
     let board = this.state.boardData
     let boardTitles = []
@@ -137,9 +239,15 @@ class App extends Component {
           boardTitle: this.state.setInfo,
           boardContents : []
         }
-      ]
+      ],
+      setInfo: ''
     })
     console.log('새로운 보드 추가됨... ', this.state.boardData)
+    
+    axios.post("/boardData/addBoard", {
+      id : this.state.boardData[this.state.boardData.length - 1].id,
+      boardTitle: this.state.boardData[this.state.boardData.length - 1].boardTitle
+    })
   }
 
   // 보드 제목 변경
@@ -420,18 +528,35 @@ class App extends Component {
     }))
     
   }
-
   
   render() {
-    console.log('상태1 : ', this.state.setInfo, '\n', '상태2 : ', this.state.setInfo2)
     return (
       <div className="App">
-        <Route path="/" exact component={Login} />
-        <Route path="/signup" exact component={SignUp} />
-        <Route path="/mypage" exact component={MyPage} />
+        <Route path="/" exact 
+        render={() => 
+        <Login fetchlogin={this.fetchlogin} redirectPage={this.redirectPage}
+        enteredId={this.enteredId} enteredPw={this.enteredPw}
+        logStatus={this.state.logStatus}/>} 
+        />
+        <Route path="/signup" exact 
+        render={() =>
+        <SignUp fetchSignUpx={this.fetchSignUp} redirectPage={this.redirectPage}
+        enteredId={this.enteredId} enteredPw={this.enteredPw} 
+        enteredUsername={this.enteredUsername}/>} 
+        />
+        <Route path="/mypage" exact
+        render={() =>
+          <MyPage 
+          userInfo={this.state.user}
+          />}
+        />
         <Route path="/main" exact 
         render={() => 
           <Main 
+          fetchLogOut={this.fetchLogOut}
+          logStatus={this.state.logStatus}
+          redirectPage={this.redirectPage}
+          userInfo={this.state.user}
           board={this.GetBoardTitles()}
           AddBoard={this.AddBoard} 
           setInfo={this.setInfo}/>} 
