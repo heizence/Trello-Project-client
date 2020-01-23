@@ -15,9 +15,7 @@ class App extends Component {
     this.state = {
       user: {
         email: '',
-        password: '',
-        userName: '',
-        createdAt: ''
+        userName: ''
       },
       enteredIdtext: '',
       enteredPwtext: '',
@@ -82,9 +80,13 @@ class App extends Component {
     this.enteredId = this.enteredId.bind(this)
     this.enteredPw = this.enteredPw.bind(this)
     this.enteredUsername = this.enteredUsername.bind(this)
+    this.modifyUserName = this.modifyUserName.bind(this)
+
     this.fetchlogin = this.fetchlogin.bind(this)
     this.fetchLogOut = this.fetchLogOut.bind(this)
-    this.fetchBoardData = this.fetchBoardData(this)
+    this.fetchDelete = this.fetchDelete.bind(this)
+    this.fetchBoardData = this.fetchBoardData.bind(this)
+
     this.redirectPage = this.redirectPage.bind(this)
     this.GetBoardTitles = this.GetBoardTitles.bind(this)
     this.setInfo = this.setInfo.bind(this)
@@ -123,6 +125,15 @@ class App extends Component {
     });
   }
 
+  // 회원정보 수정(사용자 이름)
+  modifyUserName(name) {
+    let change = this.state.user
+    change.username = name
+    this.setState({
+      user: change
+    })
+  }
+
   // 로그인
   fetchlogin() {
      axios
@@ -131,13 +142,12 @@ class App extends Component {
         password: this.state.enteredPwtext
       })
       .then(res => {
-        console.log("로그인 응답 : ", res);
         if (res.status === 200) {
-          let { email, password, username } = res.data
+          let { email, username } = res.data
           this.setState({
             ...this.state,
             user: {
-              email, password, username
+              email, username
             },
             logStatus: true
           })
@@ -152,31 +162,79 @@ class App extends Component {
 
   // 로그아웃
   fetchLogOut() {
-    let logOut = window.confirm('로그아웃 하시겠습니까?')
+    let isSure = window.confirm('로그아웃 하시겠습니까?')
 
-    if (logOut) {
+    if (isSure) {
       axios.post(`${serverAddress}/users/signout`)
       .then(res => {
-        console.log('로그아웃 응답 : ', res)
         alert(res.data)
       })
       this.setState({logStatus: false})
     }
   }
 
+  // 회원 탈퇴
+  fetchDelete() {
+    let isSure = window.confirm('정말로 탈퇴하시겠습니까? 모든 정보가 다 삭제됩니다.')
+
+    if (isSure) {
+      axios
+      .post(`${serverAddress}/users/mypage`, {
+        email: this.state.user.email
+      })
+      .then((res) => {
+          if (res.status === 200) {
+              this.setState({logStatus: false})
+              alert('탈퇴되었습니다.')
+          }
+          else {
+              alert(res.data)
+          }
+      })
+    }
+  }
+
   // 보드 정보 불러오기
   fetchBoardData() {
-    axios.get("/boardData", { withCredentials: true })
-    .then(res =>
-      this.setState({
-        boardData: res
-      })
-    );
+    let board
+
+    axios.get(`${serverAddress}/users/boardData/getBoard`)
+    .then(res => {
+      console.log('보드 가져오기 : ', res.data)
+      board = res.data
+    })
+    .catch(err => err);
+
+    return board
+  }
+
+  // 리스트 정보 불러오기
+  fetchListData(boardTitle) {
+    axios.get(`${serverAddress}/users/listData/getList`, { 
+      email: this.state.user.email,
+      boardTitle: boardTitle
+     })
+    .then(res => {
+      console.log('리스트 가져오기 : ', res)
+      return res
+    });
+  }
+
+  // 카드 정보 불러오기
+  fetchCardData(boardTitle, listTitle) {
+    axios.get(`${serverAddress}/users/cardData/getCard`, { 
+      email: this.state.user.email,
+      boardTitle: boardTitle,
+      listTitle: listTitle
+     })
+    .then(res => {
+      console.log('카드 가져오기 : ', res)
+      return res
+    });
   }
 
   // redirect
   redirectPage(address) {
-    console.log(`/${address}`)
     if (address === '') {
       return <Redirect to='/' />
     }
@@ -244,9 +302,9 @@ class App extends Component {
     })
     console.log('새로운 보드 추가됨... ', this.state.boardData)
     
-    axios.post("/boardData/addBoard", {
-      id : this.state.boardData[this.state.boardData.length - 1].id,
-      boardTitle: this.state.boardData[this.state.boardData.length - 1].boardTitle
+    axios.post(`${serverAddress}/users/boardData/addBoard`, {
+      email : this.state.user.email,
+      newBoardTitle: this.state.boardData[this.state.boardData.length - 1].boardTitle
     })
   }
 
@@ -271,6 +329,13 @@ class App extends Component {
     })
 
     console.log('보드 제목 변경됨... ', this.state.boardData)
+
+    axios.put(`${serverAddress}/users/boardData/modifyBoard`, {
+      email : this.state.user.email,
+      oldBoardTitle: oldTitle,
+      newBoardTitle: this.state.boardData[this.state.boardData.length - 1].boardTitle
+    })
+    
   }
   
   // 보드 삭제
@@ -289,6 +354,11 @@ class App extends Component {
     })
 
     console.log('보드 삭제됨... ', this.state.boardData)
+
+    axios.post(`${serverAddress}/users/boardData/deleteBoard`, {
+      email : this.state.user.email,
+      boardTitle: boardTitle
+    })
   }
 
   // 리스트 추가
@@ -316,6 +386,12 @@ class App extends Component {
       })
     }))
     console.log('새로운 리스트 추가됨... ', this.state.boardData[key])
+
+    axios.post(`${serverAddress}/users/listData/addList`, {
+      email : this.state.user.email,
+      boardTitle: boardTitle,
+      newListTitle: this.state.setInfo
+    })
   }
 
   // 리스트 수정
@@ -342,8 +418,17 @@ class App extends Component {
         }
         return board
       }),
-      setInfo: ''
+      //setInfo: ''
     }))
+
+    axios.put(`${serverAddress}/users/listData/modifyList`, {
+      email : this.state.user.email,
+      boardTitle: boardTitle,
+      oldListTitle: oldListTitle,
+      newListTitle: this.state.setInfo
+    })
+
+    this.setState({setInfo: ''})
 
   }
 
@@ -373,6 +458,12 @@ class App extends Component {
         return board
       })
     }))
+
+    axios.put(`${serverAddress}/users/listData/deleteList`, {
+      email : this.state.user.email,
+      boardTitle: boardTitle,
+      listTitle: listTitle
+    })
 
   }
 
@@ -404,10 +495,19 @@ class App extends Component {
         }
         return board
       }),
-      setInfo: ''
+      //setInfo: ''
     }))
 
     console.log('새로운 카드 추가됨... ', this.state.boardData[key])
+
+    axios.post(`${serverAddress}/users/cardData/addCard`, {
+      email : this.state.user.email,
+      boardTitle: boardTitle,
+      listTitle: listTitle,
+      newContentTitle: this.state.setInfo
+    })
+
+    this.setState({setInfo: ''})
   }
   
   // 카드 제목 변경
@@ -446,10 +546,20 @@ class App extends Component {
         }
         return board
       }),
-      setInfo: ''
+      //setInfo: ''
     }))
 
     console.log('카드 수정됨... ', this.state.boardData[key])
+
+    axios.put(`${serverAddress}/users/cardData/modifyCard`, {
+      email : this.state.user.email,
+      boardTitle: boardTitle,
+      listTitle: listTitle,
+      oldContentTitle: oldCardTitle,
+      newContentTitle: this.state.setInfo
+    })
+
+    this.setState({setInfo: ''})
   }
 
   // 카드 삭제
@@ -485,6 +595,13 @@ class App extends Component {
     }))
 
     console.log('카드 삭제됨... ', this.state.boardData[key])
+
+    axios.post(`${serverAddress}/users/cardData/deleteCard`, {
+      email : this.state.user.email,
+      boardTitle: boardTitle,
+      listTitle: listTitle,
+      contentTitle: cardTitle
+    })
 
   }
 
@@ -524,11 +641,21 @@ class App extends Component {
         }
         return board
       }),
-      setInfo2: ''
+      //setInfo2: ''
     }))
+
+    axios.put(`${serverAddress}/users/cardData/modifyCard`, {
+      email : this.state.user.email,
+      boardTitle: boardTitle,
+      listTitle: listTitle,
+      contentTitle: cardTitle,
+      contentText: this.state.setInfo2
+    })
+
+    this.setState({setInfo2: ''})
     
   }
-  
+
   render() {
     return (
       <div className="App">
@@ -547,7 +674,12 @@ class App extends Component {
         <Route path="/mypage" exact
         render={() =>
           <MyPage 
+          logStatus={this.state.logStatus}
           userInfo={this.state.user}
+          modifyUserName={this.modifyUserName}
+          fetchLogOut={this.fetchLogOut}
+          fetchDelete={this.fetchDelete}
+          redirectPage={this.redirectPage}
           />}
         />
         <Route path="/main" exact 
@@ -559,7 +691,9 @@ class App extends Component {
           userInfo={this.state.user}
           board={this.GetBoardTitles()}
           AddBoard={this.AddBoard} 
-          setInfo={this.setInfo}/>} 
+          setInfo={this.setInfo}
+          fetchBoardData={this.fetchBoardData}
+          />} 
         />
         <Route path="/main/:boardIndex" exact
         render={({ match }) => 
