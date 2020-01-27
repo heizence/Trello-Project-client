@@ -8,19 +8,28 @@ import CreateNewBoard from './AddNewBoardModal'
 // main 에서는 보드 추가 함수만 사용. 나머지는 EachBoard 컴포넌트에 props로 넘겨줘야 함
 
 const Main = (props) => {
+
     if (!props.logStatus) {
         return props.redirectPage('')
     }
     else {
-        let boardData = props.fetchBoardData()
-        console.log('메인에서 보드 데이터 확인 : ', boardData)
+        //console.log('Main 에서 보드 확인 : ', props.boardTemp)
+        let boardTitles = []
+
+        if (props.boardTemp) {
+            for (let i=0; i<props.boardTemp.length; i++) {
+                boardTitles.push(props.boardTemp[i].boardTitle)
+                //console.log('보드 이름 : ', props.boardTemp[i].boardTitle)
+            }
+        }
+
         return (
             <div>
                 <NavBar logOut={props.fetchLogOut}/>
                 <div className='PersonalBoards'>
                     <h1 style={{marginLeft: '20px', marginBottom: '20px', fontWeight: 'bold'}}>{props.userInfo.username} 님, 환영합니다</h1>
                     <h3 style={{marginLeft: '20px', marginBottom: '20px', fontWeight: 'bold'}}>Personal Boards</h3>
-                    {props.board.map((board, index) => (
+                    {boardTitles.map((board, index) => (
                         <Link to={`/main/${index}`} key={index}>
                             <div className='EachBoard' key={index}>{board}</div>
                         </Link>
@@ -38,10 +47,20 @@ export default Main;
 
 /* 백업
 const Main = (props) => {
+
     if (!props.logStatus) {
         return props.redirectPage('')
     }
     else {
+        console.log('메인에서 보드 데이터 확인 : ', props.boardTemp)
+        let boardTitles = []
+
+        for (let i=0; i<props.boardTemp.length; i++) {
+            boardTitles.push(props.boardTemp[i].boardTitle)
+
+            console.log('보드 이름 : ', props.boardTemp[i].boardTitle)
+        }
+
         return (
             <div>
                 <NavBar logOut={props.fetchLogOut}/>
