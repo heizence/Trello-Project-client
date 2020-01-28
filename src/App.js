@@ -26,60 +26,7 @@ class App extends Component {
       setInfo: '',
       setInfo2: '',
 
-      boardData: [
-        {
-            id: 0,
-            boardTitle: 'a1',
-            boardContents : [
-                {
-                    title: 'Things To Do',
-                    lists: [
-                        {contentTitle: '부족한 부분 파악하기', contentText: ''}, 
-                        {contentTitle: '복습', contentText: ''}
-                    ]
-                },
-                {
-                    title: 'Doing',
-                    lists: [
-                        {contentTitle: '블로깅하기', contentText: '블로깅 열심히 하자!'}, 
-                        {contentTitle: 'TIL 적기', contentText: '빼먹지 말자'}
-                    ]
-                },
-                {
-                    title: 'Done',
-                    lists: []
-                }
-            ]
-        },
-        {
-            id: 1,
-            boardTitle: 'a2',
-            boardContents : [
-                {
-                    title: 'Things To Do(a2)',
-                    lists: [
-                        {contentTitle: '부족한 부분 파악하기(a2)', contentText: '(a2)'}, 
-                        {contentTitle: '복습(a2)', contentText: ''}
-                    ]
-                },
-                {
-                    title: 'Doing(a2)',
-                    lists: [
-                        {contentTitle: '블로깅하기(a2)', contentText: '블로깅 열심히 하자!(a2)'}, 
-                        {contentTitle: 'TIL 적기(a2)', contentText: '빼먹지 말자(a2)'}
-                    ]
-                },
-                {
-                    title: 'Done(a2)',
-                    lists: []
-                }
-            ]
-        },
-      ],
-      currentBoardData: '',
-      boardTemp: '',
-      listTemp: '',
-      cardTemp: ''
+      boardData: ''
     }
 
     this.enteredId = this.enteredId.bind(this)
@@ -90,13 +37,7 @@ class App extends Component {
     this.fetchlogin = this.fetchlogin.bind(this)
     this.fetchLogOut = this.fetchLogOut.bind(this)
     this.fetchDelete = this.fetchDelete.bind(this)
-    this.fetchBoardData = this.fetchBoardData.bind(this)
-    this.fetchListData = this.fetchListData.bind(this)
-    this.fetchCardData = this.fetchCardData.bind(this)
-
-    this.filterListData = this.filterListData.bind(this)
-    this.filterCardData = this.filterCardData.bind(this)
-    this.assembleBoardData = this.assembleBoardData.bind(this)
+    this.fetchFullBoardData = this.fetchFullBoardData.bind(this)
 
     this.redirectPage = this.redirectPage.bind(this)
     this.GetBoardTitles = this.GetBoardTitles.bind(this)
@@ -164,9 +105,7 @@ class App extends Component {
             logStatus: true
           })
           // 로그인 되면 보드 데이터 불러오기
-          this.fetchBoardData()
-          this.fetchListData()
-          this.fetchCardData()
+          this.fetchFullBoardData()
 
           alert('로그인 되었습니다.')
         }
@@ -209,76 +148,15 @@ class App extends Component {
       })
     }
   }
-
-  // 보드 정보 불러오기
-  fetchBoardData () {    
-    axios.get(`${serverAddress}/users/boardData/getBoard/?user=${this.state.user.email}`)
+  // 완전하게 조립된 보드 불러오기
+  fetchFullBoardData() {
+    axios.get(`${serverAddress}/users/getBoardData/?user=${this.state.user.email}`)
     .then(res => {
-      //console.log('보드 가져오기 : ', res.data)
-      this.setState({boardTemp: res.data})
-      console.log('state 확인 : ', this.state.boardTemp)
+      this.setState({boardData: res.data})
+      console.log('state확인 : ', this.state.boardData)
     })
-    .catch(err => err);
   }
-
-  // 리스트 정보 불러오기
-  fetchListData() {
-    axios.get(`${serverAddress}/users/listData/getList/?user=${this.state.user.email}`)
-    .then(res => {
-      //console.log('리스트 가져오기 : ', res.data)
-      this.setState({listTemp: res.data})
-      console.log('state 확인 : ', this.state.listTemp)
-    });
-  }
-
-  // 카드 정보 불러오기
-  fetchCardData() {
-    axios.get(`${serverAddress}/users/cardData/getCard/?user=${this.state.user.email}`)
-    .then(res => {
-      //console.log('카드 가져오기 : ', res.data)
-      this.setState({cardTemp: res.data})
-      console.log('state 확인 : ', this.state.cardTemp)
-    });
-  }
-
-  // 리스트 필터링하기
-  filterListData = (boardTitle, list, card) => {
-    let listData = list.filter(list => {
-        return list.boardTitle === boardTitle
-    }).map(list => {
-        return {
-            title: list.listTitle,
-            lists: this.filterCardData(boardTitle, list.listTitle, card).map(card => {
-                return { contentTitle: card.contentTitle, contentText: card.contentText }
-            })
-        }
-    })
-
-    return listData
-  }
-
-  // 카드 필터링하기
-  filterCardData = (boardTitle, listTitle, card) => {
-    let cardData = card.filter(card => {
-        return card.boardTitle === boardTitle && card.listTitle === listTitle
-    })
-
-    return cardData
-  }
-
-  // 리스트, 카드 데이터 모아서 보드 조립하기
-  assembleBoardData(board, list, card) {
-    //console.log('보드 조립함수 실행 : ', board, list, card)
-    let output = {
-      boardTitle: board.boardTitle,
-      boardContents: this.filterListData(board.boardTitle, list, card)
-    }
-    console.log('보드 조립 확인 : ', output)
-    //this.setState({currentBoardData: output})
-    //console.log('state 확인 : ', this.state.currentBoardData)
-    return output
-  }
-
+  
   // redirect
   redirectPage(address) {
     if (address === '') {
@@ -290,8 +168,7 @@ class App extends Component {
   }
 
   // 보드 이름 추출하기
-  GetBoardTitles() {    
-    let board = this.state.boardData
+  GetBoardTitles(board) {    
     let boardTitles = []
 
     for (let i in board) {
@@ -315,8 +192,7 @@ class App extends Component {
       })
       return;
     }
-
-    console.log('SET INFO : ', this.state.setInfo)
+    //console.log('SET INFO : ', this.state.setInfo)
   }
 
   setInfo2(e, text) {
@@ -331,7 +207,7 @@ class App extends Component {
         setInfo2: text
       })
     }
-    console.log('SET INFO2 : ', this.state.setInfo2)
+    //console.log('SET INFO2 : ', this.state.setInfo2)
   }
 
   // 보드 추가
@@ -346,11 +222,11 @@ class App extends Component {
       ],
       setInfo: ''
     })
-    console.log('새로운 보드 추가됨... ', this.state.boardData)
+    //console.log('새로운 보드 추가됨... ', this.state.boardData)
     
     axios.post(`${serverAddress}/users/boardData/addBoard`, {
       email : this.state.user.email,
-      newBoardTitle: this.state.boardData[this.state.boardData.length - 1].boardTitle
+      newBoardTitle: this.state.setInfo
     })
   }
 
@@ -374,12 +250,12 @@ class App extends Component {
       setInfo: ''
     })
 
-    console.log('보드 제목 변경됨... ', this.state.boardData)
+    //console.log('보드 제목 변경됨... ', this.state.boardData)
 
     axios.put(`${serverAddress}/users/boardData/modifyBoard`, {
       email : this.state.user.email,
       oldBoardTitle: oldTitle,
-      newBoardTitle: this.state.boardData[this.state.boardData.length - 1].boardTitle
+      newBoardTitle: this.state.setInfo
     })
     
   }
@@ -399,7 +275,7 @@ class App extends Component {
       boardData: stateToChange
     })
 
-    console.log('보드 삭제됨... ', this.state.boardData)
+    //console.log('보드 삭제됨... ', this.state.boardData)
 
     axios.post(`${serverAddress}/users/boardData/deleteBoard`, {
       email : this.state.user.email,
@@ -431,7 +307,8 @@ class App extends Component {
         return board
       })
     }))
-    console.log('새로운 리스트 추가됨... ', this.state.boardData[key])
+
+    //console.log('새로운 리스트 추가됨... ', this.state.boardData[key])
 
     axios.post(`${serverAddress}/users/listData/addList`, {
       email : this.state.user.email,
@@ -464,7 +341,6 @@ class App extends Component {
         }
         return board
       }),
-      //setInfo: ''
     }))
 
     axios.put(`${serverAddress}/users/listData/modifyList`, {
@@ -475,7 +351,6 @@ class App extends Component {
     })
 
     this.setState({setInfo: ''})
-
   }
 
   // 리스트 삭제
@@ -496,7 +371,7 @@ class App extends Component {
 
             if (board.boardContents[i].title === listTitle) {
               board.boardContents.splice(i, 1)
-              console.log('리스트 삭제됨... ', board.boardContents)
+              //console.log('리스트 삭제됨... ', board.boardContents)
               break
             }
           }
@@ -505,7 +380,7 @@ class App extends Component {
       })
     }))
 
-    axios.put(`${serverAddress}/users/listData/deleteList`, {
+    axios.post(`${serverAddress}/users/listData/deleteList`, {
       email : this.state.user.email,
       boardTitle: boardTitle,
       listTitle: listTitle
@@ -526,7 +401,7 @@ class App extends Component {
     
     let newCard = {
       contentTitle: this.state.setInfo, 
-      contentText: ''
+      contentText: '' || this.state.setInfo2
     }
 
     this.setState(prevState => ({
@@ -541,16 +416,16 @@ class App extends Component {
         }
         return board
       }),
-      //setInfo: ''
     }))
 
-    console.log('새로운 카드 추가됨... ', this.state.boardData[key])
+    //console.log('새로운 카드 추가됨... ', this.state.boardData[key])
 
     axios.post(`${serverAddress}/users/cardData/addCard`, {
       email : this.state.user.email,
       boardTitle: boardTitle,
       listTitle: listTitle,
-      newContentTitle: this.state.setInfo
+      newContentTitle: this.state.setInfo,
+      contentText: '' || this.state.setInfo2
     })
 
     this.setState({setInfo: ''})
@@ -592,10 +467,9 @@ class App extends Component {
         }
         return board
       }),
-      //setInfo: ''
     }))
 
-    console.log('카드 수정됨... ', this.state.boardData[key])
+    //console.log('카드 수정됨... ', this.state.boardData[key])
 
     axios.put(`${serverAddress}/users/cardData/modifyCard`, {
       email : this.state.user.email,
@@ -640,7 +514,7 @@ class App extends Component {
       })
     }))
 
-    console.log('카드 삭제됨... ', this.state.boardData[key])
+    //console.log('카드 삭제됨... ', this.state.boardData[key])
 
     axios.post(`${serverAddress}/users/cardData/deleteCard`, {
       email : this.state.user.email,
@@ -677,7 +551,7 @@ class App extends Component {
                 if (list[i].lists[j].contentTitle === cardTitle) {
                   list[i].lists[j].contentText = this.state.setInfo2
 
-                  console.log('카드 내용 추가/수정됨 : ', list[i])
+                  //console.log('카드 내용 추가/수정됨 : ', list[i])
                   break;
                 }
               }
@@ -687,19 +561,17 @@ class App extends Component {
         }
         return board
       }),
-      //setInfo2: ''
     }))
 
     axios.put(`${serverAddress}/users/cardData/modifyCard`, {
       email : this.state.user.email,
       boardTitle: boardTitle,
       listTitle: listTitle,
-      contentTitle: cardTitle,
+      oldContentTitle: cardTitle,
       contentText: this.state.setInfo2
     })
 
     this.setState({setInfo2: ''})
-    
   }
 
   render() {
@@ -735,18 +607,16 @@ class App extends Component {
           logStatus={this.state.logStatus}
           redirectPage={this.redirectPage}
           userInfo={this.state.user}
-          board={this.GetBoardTitles()}
+          board={this.GetBoardTitles(this.state.boardData)}
           AddBoard={this.AddBoard} 
           setInfo={this.setInfo}
-          boardTemp={this.state.boardTemp}
-          listTemp={this.state.listTemp}
-          cardTemp={this.state.cardTemp}
           />} 
         />
         <Route path="/main/:boardIndex" exact
         render={({ match }) => 
           <EachBoard           
           logStatus={this.state.logStatus}
+          fetchLogOut={this.fetchLogOut}
           redirectPage={this.redirectPage}
           board={this.state.boardData[match.params.boardIndex]}
           setInfo={this.setInfo}
@@ -760,12 +630,6 @@ class App extends Component {
           ChangeCardTitle={this.ChangeCardTitle}
           DeleteCard={this.DeleteCard}
           AddOrChangeCardDescription={this.AddOrChangeCardDescription}
-          boardTemp={this.state.boardTemp[match.params.boardIndex]}
-          listTemp={this.state.listTemp}
-          cardTemp={this.state.cardTemp}
-          filterListData={this.filterListData}
-          filterCardData={this.filterCardData}
-          assembleBoardData={this.assembleBoardData}
           />
         }
         />

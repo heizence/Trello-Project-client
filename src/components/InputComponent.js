@@ -26,7 +26,7 @@ const InputComponent = (props) => {
         return (
             <div onClick={changeTag} className={props.class}>
             {props.class === 'ListTitle' ? props.buttonLabel :content}
-            </div>// content => props.buttonLabel
+            </div>
         )
     }
     
@@ -41,10 +41,10 @@ const InputComponent = (props) => {
 
         return (
             <input 
-            defaultValue={props.buttonLabel} // content => props.buttonLabel
+            defaultValue={props.buttonLabel}
             onClick={(e) => {
                 e.target.select()
-                props.setInfo(e, e.target.defaultValue)  // 앞에 null 생략
+                props.setInfo(e, e.target.defaultValue)
             }}
             onKeyUp={(e) => {pressEnter(e)}}
             onChange={(e) => {
@@ -55,10 +55,9 @@ const InputComponent = (props) => {
     }
 
     const createTextareaTag = () => {
-        return <textarea className='ModalContents' defaultValue={props.buttonLabel}  // content => props.buttonLabel
+        return <textarea className='ModalContents' defaultValue={props.buttonLabel}
         onClick={(e) => {
-            e.target.select()
-            console.log('Textarea 선택됨. ', e.target.defaultValue)                
+            e.target.select()            
             props.setInfo2(e)
         }} 
         onKeyUp={(e) => {pressEnter(e)}}
