@@ -14,7 +14,7 @@ const InputComponent = (props) => {
             setContent(e.target.value)
             
             if (props.DirectChange) {
-                props.DirectChange(props.boardTitle, props.buttonLabel)
+                props.DirectChange(props.boardId, props.listId)
             }
         }
         else if (e.keyCode === 27) {
@@ -44,7 +44,7 @@ const InputComponent = (props) => {
             defaultValue={props.buttonLabel}
             onClick={(e) => {
                 e.target.select()
-                props.setInfo(e, e.target.defaultValue)
+                //props.setInfo(e, e.target.defaultValue)
             }}
             onKeyUp={(e) => {pressEnter(e)}}
             onChange={(e) => {
@@ -58,7 +58,7 @@ const InputComponent = (props) => {
         return <textarea className='ModalContents' defaultValue={props.buttonLabel}
         onClick={(e) => {
             e.target.select()            
-            props.setInfo2(e)
+            //props.setInfo2(e)
         }} 
         onKeyUp={(e) => {pressEnter(e)}}
         onChange={(e) => {

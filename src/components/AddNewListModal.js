@@ -5,7 +5,7 @@ import InputComponent from './InputComponent'
 const ModalExample = (props) => {
   const {
     buttonLabel, className, css,
-    boardTitle, setInfo, AddList
+    boardId, setInfo, AddList
   } = props;
 
   const [modal, setModal] = useState(false);
@@ -25,7 +25,7 @@ const ModalExample = (props) => {
         </ModalBody>
         <ModalFooter>          
           <Button color="primary" onClick={() => {
-            AddList(boardTitle)
+            AddList(boardId)
             toggle()
           }}>추가</Button>
           <Button color="secondary" onClick={toggle}>취소</Button>

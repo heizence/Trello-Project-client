@@ -41,7 +41,7 @@ const MyPage = (props) => {
         }
         else {
             axios
-            .put(`${serverAddress}/users/mypage`, {
+            .put(`${serverAddress}/users/mypage/modify`, {
                 email: props.userInfo.email,
                 password: password,
                 username: username
@@ -54,6 +54,10 @@ const MyPage = (props) => {
                 else {
                     alert(res.data)
                 }
+            })
+            .catch(err => {
+                console.log(err)
+                alert('서버 연결 도중 에러가 발생하였습니다.')
             })
         }
         return;

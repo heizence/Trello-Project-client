@@ -6,13 +6,13 @@ const ModalExample = (props) => {
   const {
     buttonLabel, className, type, css,
     boardTitle, listTitle, contentText,
+    boardId, listId, cardId,
     setInfo, setInfo2,
-    AddCard, ChangeCardTitle, DeleteCard,
+    AddCard, ChangeCard, DeleteCard,
     AddOrChangeCardDescription
   } = props;
 
   const [modal, setModal] = useState(false);
-
 
   const toggle = () => setModal(!modal);
 
@@ -35,21 +35,18 @@ const ModalExample = (props) => {
           onClick={() => {
             let answer = window.confirm('카드를 삭제하시겠습니까?')
                 if (answer) {
-                    DeleteCard(boardTitle, listTitle, buttonLabel)
-                    alert('삭제되었습니다')
+                    DeleteCard(boardId, listId, cardId)
                     toggle()
                 }
           }}>Delete this Card</div> : ''}
         </ModalBody>
         <ModalFooter>
           {type === 'modify' ? <Button color="primary" onClick={() => {
-            ChangeCardTitle(boardTitle, listTitle, buttonLabel) 
-            AddOrChangeCardDescription(boardTitle, listTitle, buttonLabel)
+            ChangeCard(boardId, listId, cardId) 
             toggle()
           }}>수정</Button> :
           <Button color="primary" onClick={() => {
-            AddCard(boardTitle, listTitle)
-            AddOrChangeCardDescription(boardTitle, listTitle, buttonLabel)
+            AddCard(boardId, listId)
             toggle()
           }}>추가</Button>}
 

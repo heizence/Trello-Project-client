@@ -10,7 +10,7 @@ const ModalExample = (props) => {
     setModal(!modal)
   }
 
-  const { buttonLabel, className, css } = props;
+  const { boardId, buttonLabel, className, css } = props;
 
   return (
     <div>
@@ -25,7 +25,7 @@ const ModalExample = (props) => {
         </ModalBody>
         <ModalFooter>          
           <Button color="primary" onClick={() => {
-            props.ChangeBoardTitle(buttonLabel)
+            props.ChangeBoardTitle(boardId)
             toggle()
           }}>변경</Button>
           <Button color="secondary" onClick={toggle}>취소</Button>
